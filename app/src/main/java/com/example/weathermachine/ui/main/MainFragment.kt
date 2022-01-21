@@ -43,6 +43,7 @@ class MainFragment : Fragment() {
     }
 
     private fun renderData(appState: AppState) = with(binding){
+
         when (appState){
             is AppState.Success -> {
                 val weatherData = appState.weatherData
