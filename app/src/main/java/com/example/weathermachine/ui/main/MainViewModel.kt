@@ -13,23 +13,31 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     private val liveData = MutableLiveData<AppState>()
 
     fun getLiveData(): LiveData<AppState> = liveData
-    
-    fun getWeather() = getDataFromLocalSource()
 
-    private fun getDataFromLocalSource() {
+    fun getWeatherFromLocalSourceRus() = getDataFromLocalSource(true)
+
+    fun getWeatherFromLocalSourceWorld() = getDataFromLocalSource(false)
+
+    private fun getDataFromLocalSource(isRussian: Boolean) {
         liveData.value = AppState.Loading
-        val x: Int = (Math.random() * 2).toInt()
-        if (x == 0) {
-            Thread {
-                sleep(1000)
-                liveData.postValue(AppState.Success(repository.getWeatherFromLocalStorage()))
-            }.start()
-        } else if (x == 1) {
-            Thread {
-                sleep(1000)
-                liveData.postValue(AppState.Error(Exception()))
-            }.start()
-        }
+//        val x: Int = (Math.random() * 2).toInt()
+//        if (x == 0) {
+        Thread {
+            sleep(1000)
+            liveData.postValue(
+                if (isRussian) {
+                    AppState.Success(repository.getWeatherFromLocalStorageRus())
+                } else {
+                    AppState.Success(repository.getWeatherFromLocalStorageWorld())
+                }
+            )
+        }.start()
+//        } else if (x == 1) {
+//            Thread {
+//                sleep(1000)
+//                liveData.postValue(AppState.Error(Exception()))
+//            }.start()
+////        }
     }
 
     override fun onCleared() {
